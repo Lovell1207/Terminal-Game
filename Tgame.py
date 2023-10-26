@@ -1,7 +1,7 @@
 #This is the terminal project for Codecademy
 
 print("Welcome to Maze Game")
-print("Dev, V. 0.0.3\n\n")
+print("Dev, V. 0.0.4\n\n")
 
 #working on the class for each maze square
 
@@ -25,7 +25,11 @@ class MazeRoom:
         else:
            return "Door has already been opened. Leads to Rm:??"
   
-    
+    def door_status_Isopen(self, door):
+        if door== 0:
+           return False
+        else:
+           return True    
     
     def backroom_number_calculator(self):
         if self.back_door==1:
@@ -72,7 +76,20 @@ class MazeRoom:
 
             
         
+### function writing area 
+
+
+def cross_check_input(user_input, list_to_check):
+    #this function takes an input and checks with provided list if valid input and return a BOOL
+    #print("in cross_check_input function.", list_to_check , type(list_to_check))     #TESTING Print statement
+    for each_element in list_to_check:
+        if user_input== each_element:
+            return True
+        
+    return False
+
 #start the game, intro and first input?
+
 
 # testmaze= MazeRoom(0)
 # print(testmaze)
@@ -87,15 +104,12 @@ dimension_number = input("How many layers of Dimensions can you search?\n")
 input("Press Enter to Open the First Door\n") 
 
 first_maze_door= MazeRoom(1)
-sdsds_maze_door=MazeRoom(1)
-sdddd= MazeRoom(1)
 
 print("\nFirst Door opened! Good Luck")
-print(first_maze_door)
-print(sdsds_maze_door)
-print(sdddd)
+#print(first_maze_door)
+#^gets printed in the while loop
 
-#starting iteration and game logic
+#starting iteration and game logic. passing the first "link"
 current_room =first_maze_door
 
 
@@ -106,13 +120,23 @@ while current_room.prize == 0 :
     # tmp_right= current_room.right_door  
     # tmp_back= current_room.back_door
     
-    #dooroptions = { 'a':left, 'w': front,'d' :right,'s': back} 
+    dooroptions = { "a":"left", "w":"front" , "d":"right", "s": "back"} 
     
     print(current_room)
     print('''What door will you open?''')
-    door_choice = input("Enter to Choose { a, w, d, s }")
-    #if door_choice != "a" or door_choice
+    
+    #DOOR INPUT VALIDATION AND CHECK section
+    door_choice_input = input("Enter to Choose. {options} \n".format(options=dooroptions))     
+    #check input fuction
+    input_is_Valid = cross_check_input(door_choice_input, dooroptions.keys())     
+    #print("returned", input_is_Invalid) # was testing function return    
+    while(input_is_Valid == False) :    
+        door_choice_input = input("Incorrect option, please choose between:{options}\n".format(options= list(dooroptions.keys())))
+        input_is_Valid = cross_check_input(door_choice_input, dooroptions.keys())
+    
+    #now open the door
+    #if(door_choice_input=="a"):
+     #   if (current_room.door_status_Isopen(
     
     
-    
-    current_room.prize=1
+    current_room.prize = 1
