@@ -23,7 +23,7 @@ class MazeRoom:
         if door== 0:
            return "Door not opened yet."
         else:
-           return "Door has already been opened. Leads to Rm:??"
+           return ("Leads to Rm:{id}.".format(id= door.id))
   
     def door_status_Isopen(self, door):
         if door== 0:
@@ -39,7 +39,7 @@ class MazeRoom:
         
         
     def __repr__(self):
-        info=''' ------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n'''
+        info='''\n----------------------------------------------------------------------------------------------------------------------\n\n'''
           
         info+="This is Maze Room #{mazenumber}.\n".format(mazenumber= self.id)
         info +="There is {prize} as the main item in the room.\n".format(prize= self.prize) 
@@ -110,19 +110,16 @@ print("\nFirst Door opened! Good Luck")
 #^gets printed in the while loop
 
 #starting iteration and game logic. passing the first "link"
+#using current_room name as pointer to rooms
 current_room =first_maze_door
-
+print(current_room)
 
 
 while current_room.prize == 0 :
-    # tmp_left= current_room.left_door
-    # tmp_front= current_room.front_door
-    # tmp_right= current_room.right_door  
-    # tmp_back= current_room.back_door
-    
+        
     dooroptions = { "a":"left", "w":"front" , "d":"right", "s": "back"} 
     
-    print(current_room)
+    #print(current_room) #will print at end
     print('''What door will you open?''')
     
     #DOOR INPUT VALIDATION AND CHECK section
@@ -135,8 +132,54 @@ while current_room.prize == 0 :
         input_is_Valid = cross_check_input(door_choice_input, dooroptions.keys())
     
     #now open the door
-    #if(door_choice_input=="a"):
-     #   if (current_room.door_status_Isopen(
+    if(door_choice_input=="s"):
+        if (current_room.back_door== 1):            
+            print("You are currently in the First Room, There is no going back!")                       
+        else :            
+            current_room = current_room.back_door
+            print("Back Door Opened")
+            #pointer takes old room
+    
+    if(door_choice_input=="a"):
+        if (current_room.door_status_Isopen(current_room.left_door)==True):            
+            print(current_room.door_status_text(current_room.left_door))
+            print("Entering Room: {id}".format(id = current_room.left_door.id))
+            current_room = current_room.left_door
+                        
+        else :
+            current_room.left_door= MazeRoom(current_room)
+            current_room = current_room.left_door
+            print("Left Door Opened")
+            #pointer takes new room
+            
+    if(door_choice_input=="w"):
+        if (current_room.door_status_Isopen(current_room.front_door)==True):            
+            print(current_room.door_status_text(current_room.front_door))
+            print("Entering Room: {id}".format(id = current_room.front_door.id))
+            current_room = current_room.front_door
+                        
+        else :
+            current_room.front_door= MazeRoom(current_room)
+            current_room = current_room.front_door
+            print("Front Door Opened")
+            #pointer takes new room
+    
+    if(door_choice_input=="d"):
+        if (current_room.door_status_Isopen(current_room.right_door)==True):            
+            print(current_room.door_status_text(current_room.right_door))
+            print("Entering Room: {id}".format(id = current_room.right_door.id))
+            current_room = current_room.right_door
+                        
+        else :
+            current_room.right_door= MazeRoom(current_room)
+            current_room = current_room.right_door
+            print("Right Door Opened")
+            #pointer takes new room
+    
+   # print('''\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n''')
+    print(current_room)
+    current_room.prize = 0
     
     
-    current_room.prize = 1
+    
+    
