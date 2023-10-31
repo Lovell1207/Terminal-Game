@@ -2,8 +2,12 @@
 import datetime
 import random
 
-print("Welcome to Maze Game")
-print("Dev, V. 0.0.5\n\n")
+print('''
+ +-+-+-+-+-+-+-+ +-+-+ +-+-+-+ +-+-+-+-+ +-+-+-+-+
+ |W|e|l|c|o|m|e| |t|o| |t|h|e| |M|a|z|e| |G|a|m|e|
+ +-+-+-+-+-+-+-+ +-+-+ +-+-+-+ +-+-+-+-+ +-+-+-+-+
+''')
+print("Dev, V. 0.0.6\n\n")
 
     
 #Class for each maze square
@@ -93,7 +97,7 @@ def input_to_int(input_var):
     try : 
         dimension_number = int(input_var)
     except:
-        print("conversion no good")
+       # print("conversion no good")
         dimension_number = 0    
     return dimension_number
 
@@ -119,16 +123,12 @@ def generate_prize(back_door, current_total_room, max_dimension):
         
     return 0
 
-#start the game, intro and first input?
-
-
-# testmaze= MazeRoom(0)
-# print(testmaze)
-# print(testmaze)
+#start the game, intro and first input
 
 print('''You have entered the multiverse maze, you will need to find the hidden treasure deep inside this maze. 
 There are 4 doors in a room and each door will lead to a new room except the back door. 
 You can go back and forth and try all the path you wish.''')
+
 
 dimension_input = input("How many layers of Dimensions can you search? Enter a number(1-3). \n")
 dimension_number = input_to_int(dimension_input)
@@ -143,8 +143,6 @@ input("Press Enter to Open the First Door\n")
 first_maze_door= MazeRoom(1)
 
 print("\nFirst Door opened! Good Luck")
-#print(first_maze_door)
-#^gets printed in the while loop
 
 #starting iteration and game logic. passing the first "link"
 #using current_room name as pointer to rooms
@@ -154,7 +152,7 @@ print(current_room)
 
 while current_room.prize == 0 :
         
-    dooroptions = { "a":"left", "w":"front" , "d":"right", "s": "back"} 
+    dooroptions = { "a":"left", "w":"front" , "d":"right", "s": "back", "g":"Give Up"} 
     
     #print(current_room) #will print at end
     print('''What door will you open?''')
@@ -167,6 +165,11 @@ while current_room.prize == 0 :
     while(input_is_Valid == False) :    
         door_choice_input = input("Incorrect option, please choose between:{options}\n".format(options= list(dooroptions.keys())))
         input_is_Valid = cross_check_input(door_choice_input, dooroptions.keys())
+    
+    #give up?
+    if (door_choice_input =="g"):
+        print("You have given up!\n")
+        break
     
     #now open the door
     if(door_choice_input=="s"):
@@ -184,9 +187,13 @@ while current_room.prize == 0 :
             current_room = current_room.left_door
                         
         else :
-            current_room.left_door= MazeRoom(current_room)
-            current_room = current_room.left_door
-            print("Left Door Opened")
+            if(current_room.dimension >= dimension_number):
+                print("You are currently in the highest Dimension chosen at start, please go back and try another room! \n")
+                continue
+            else:  
+                current_room.left_door= MazeRoom(current_room)
+                current_room = current_room.left_door
+                print("Left Door Opened")
             #pointer takes new room
             
     if(door_choice_input=="w"):
@@ -196,10 +203,14 @@ while current_room.prize == 0 :
             current_room = current_room.front_door
                         
         else :
-            current_room.front_door= MazeRoom(current_room)
-            current_room = current_room.front_door
-            print("Front Door Opened")
-            #pointer takes new room
+            if(current_room.dimension >= dimension_number):
+                print("You are currently in the highest Dimension chosen at start, please go back and try another room! \n")
+                continue
+            else:
+                current_room.front_door= MazeRoom(current_room)
+                current_room = current_room.front_door
+                print("Front Door Opened")
+                #pointer takes new room
     
     if(door_choice_input=="d"):
         if (current_room.door_status_Isopen(current_room.right_door)==True):            
@@ -208,15 +219,32 @@ while current_room.prize == 0 :
             current_room = current_room.right_door
                         
         else :
-            current_room.right_door= MazeRoom(current_room)
-            current_room = current_room.right_door
-            print("Right Door Opened")
-            #pointer takes new room
+            if(current_room.dimension >= dimension_number):
+                print("You are currently in the highest Dimension chosen at start, please go back and try another room! \n")
+                continue
+            else:
+                current_room.right_door= MazeRoom(current_room)
+                current_room = current_room.right_door
+                print("Right Door Opened")
+                #pointer takes new room
     
    # print('''\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n''')
     print(current_room)
     #current_room.prize = 0
-    
-    
-    
-    
+
+#check win status
+if (current_room.prize == 1):
+    print(''' 
+$$\     $$\                         $$\      $$\                     
+\$$\   $$  |                        $$ | $\  $$ |                    
+ \$$\ $$  /$$$$$$\  $$\   $$\       $$ |$$$\ $$ | $$$$$$\  $$$$$$$\  
+  \$$$$  /$$  __$$\ $$ |  $$ |      $$ $$ $$\$$ |$$  __$$\ $$  __$$\ 
+   \$$  / $$ /  $$ |$$ |  $$ |      $$$$  _$$$$ |$$ /  $$ |$$ |  $$ |
+    $$ |  $$ |  $$ |$$ |  $$ |      $$$  / \$$$ |$$ |  $$ |$$ |  $$ |
+    $$ |  \$$$$$$  |\$$$$$$  |      $$  /   \$$ |\$$$$$$  |$$ |  $$ |
+    \__|   \______/  \______/       \__/     \__| \______/ \__|  \__| ''')
+     #implement win
+
+
+#finishing touches
+print('''\nThank you for playing the maze game. Play again and test your luck anytime!''')
