@@ -1,10 +1,12 @@
 #This is the terminal project for Codecademy
+import datetime
+import random
 
 print("Welcome to Maze Game")
-print("Dev, V. 0.0.4\n\n")
+print("Dev, V. 0.0.5\n\n")
 
-#working on the class for each maze square
-
+    
+#Class for each maze square
 class MazeRoom:
     Totalrooms=0
     
@@ -13,12 +15,11 @@ class MazeRoom:
         self.front_door =0
         self.right_door =0
         self.left_door=0
-        self.prize =0
+        self.prize = generate_prize(back_door, self.Totalrooms, dimension_number)
         MazeRoom.Totalrooms += 1
         self.id = MazeRoom.Totalrooms
-        self.dimension = self.dimension_calculator()
-        
-        
+        self.dimension = self.dimension_calculator() 
+                 
     def door_status_text(self, door):
         if door== 0:
            return "Door not opened yet."
@@ -88,6 +89,36 @@ def cross_check_input(user_input, list_to_check):
         
     return False
 
+def input_to_int(input_var):
+    try : 
+        dimension_number = int(input_var)
+    except:
+        print("conversion no good")
+        dimension_number = 0    
+    return dimension_number
+
+
+def generate_prize(back_door, current_total_room, max_dimension):
+    current_time = datetime.datetime.now()
+    current_milisec= current_time.strftime('%f')
+    #print(current_milisec)    
+    
+    max_rooms = 3**int(max_dimension)
+   # print(" in generate_prize function, max room calculates to", max_rooms)
+    random.seed(current_milisec)
+    r_number= random.randint(1,100)
+    
+    if (back_door == 1):
+        return 0
+    elif (current_total_room == max_rooms):
+        return 1
+    elif (r_number == 100):        
+        return 1
+    else:
+        return 0
+        
+    return 0
+
 #start the game, intro and first input?
 
 
@@ -99,7 +130,13 @@ print('''You have entered the multiverse maze, you will need to find the hidden 
 There are 4 doors in a room and each door will lead to a new room except the back door. 
 You can go back and forth and try all the path you wish.''')
 
-dimension_number = input("How many layers of Dimensions can you search?\n") 
+dimension_input = input("How many layers of Dimensions can you search? Enter a number(1-3). \n")
+dimension_number = input_to_int(dimension_input)
+input_is_Valid= cross_check_input( dimension_number, [1,2,3])
+while(input_is_Valid== False):    
+    dimension_input = input("Invalid choice, please select a number between 1 to 3 \n")
+    dimension_number = input_to_int(dimension_input)
+    input_is_Valid = cross_check_input( dimension_number, [1,2,3])    
 
 input("Press Enter to Open the First Door\n") 
 
@@ -178,7 +215,7 @@ while current_room.prize == 0 :
     
    # print('''\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n''')
     print(current_room)
-    current_room.prize = 0
+    #current_room.prize = 0
     
     
     
