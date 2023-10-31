@@ -7,8 +7,8 @@ print('''
  |W|e|l|c|o|m|e| |t|o| |t|h|e| |M|a|z|e| |G|a|m|e|
  +-+-+-+-+-+-+-+ +-+-+ +-+-+-+ +-+-+-+-+ +-+-+-+-+
 ''')
-print("Dev, V. 0.0.6\n\n")
-
+#print("Dev, V. 0.0.7\n\n")
+print("Ver. 1.0\n\n")
     
 #Class for each maze square
 class MazeRoom:
@@ -19,7 +19,7 @@ class MazeRoom:
         self.front_door =0
         self.right_door =0
         self.left_door=0
-        self.prize = generate_prize(back_door, self.Totalrooms, dimension_number)
+        self.prize = generate_prize(back_door, self.Totalrooms, max_rooms)
         MazeRoom.Totalrooms += 1
         self.id = MazeRoom.Totalrooms
         self.dimension = self.dimension_calculator() 
@@ -49,23 +49,38 @@ class MazeRoom:
         info+="This is Maze Room #{mazenumber}.\n".format(mazenumber= self.id)
         info +="There is {prize} as the main item in the room.\n".format(prize= self.prize) 
         
-        
-        info+='''\nHere are the status of the doors: 
-                                                    Room Number     : {room_number}
-                                                    Left Door       : {left_door}
-                                                    Front Door      : {front_door}
-                                                    Right Door      : {right_door}
-                                                    Room Dimension  : {dimension_number}
-                                                    Back Door       : {parent_rm_number}
-   
-        '''.format(
-            room_number= self.id, 
-            left_door=self.door_status_text(self.left_door), 
-            front_door = self.door_status_text(self.front_door),
-            right_door= self.door_status_text(self.right_door),
-            dimension_number=self.dimension,
-            parent_rm_number= self.backroom_number_calculator()
-        )
+        if(self.dimension >= dimension_number):
+            info+='''\nHere are the status of the doors: 
+                                                        Room Number     : {room_number}
+                                                        Left Door       : No Door present
+                                                        Front Door      : No Door present
+                                                        Right Door      : No Door present
+                                                        Room Dimension  : {dimension_number}
+                                                        Back Door       : {parent_rm_number}
+       
+            '''.format(
+                room_number= self.id,
+                dimension_number=self.dimension,
+                parent_rm_number= self.backroom_number_calculator()
+            )
+            
+        else:   
+            info+='''\nHere are the status of the doors: 
+                                                        Room Number     : {room_number}
+                                                        Left Door       : {left_door}
+                                                        Front Door      : {front_door}
+                                                        Right Door      : {right_door}
+                                                        Room Dimension  : {dimension_number}
+                                                        Back Door       : {parent_rm_number}
+       
+            '''.format(
+                room_number= self.id, 
+                left_door=self.door_status_text(self.left_door), 
+                front_door = self.door_status_text(self.front_door),
+                right_door= self.door_status_text(self.right_door),
+                dimension_number=self.dimension,
+                parent_rm_number= self.backroom_number_calculator()
+            )
                   
         return info
         
@@ -102,21 +117,21 @@ def input_to_int(input_var):
     return dimension_number
 
 
-def generate_prize(back_door, current_total_room, max_dimension):
+def generate_prize(back_door, current_total_room, max_rooms):
     current_time = datetime.datetime.now()
     current_milisec= current_time.strftime('%f')
-    #print(current_milisec)    
+    #takes only the (current_milisec)    
+    #calculates the max # of rooms
     
-    max_rooms = 3**int(max_dimension)
    # print(" in generate_prize function, max room calculates to", max_rooms)
     random.seed(current_milisec)
     r_number= random.randint(1,100)
     
     if (back_door == 1):
         return 0
-    elif (current_total_room == max_rooms):
+    elif (current_total_room >= max_rooms-1):
         return 1
-    elif (r_number == 100):        
+    elif (r_number >= 90):        
         return 1
     else:
         return 0
@@ -137,6 +152,11 @@ while(input_is_Valid== False):
     dimension_input = input("Invalid choice, please select a number between 1 to 3 \n")
     dimension_number = input_to_int(dimension_input)
     input_is_Valid = cross_check_input( dimension_number, [1,2,3])    
+    
+#calculates total possible rooms
+max_rooms=0
+for each_dimension in range(0,dimension_number+1):
+    max_rooms += 3**each_dimension
 
 input("Press Enter to Open the First Door\n") 
 
@@ -243,8 +263,15 @@ $$\     $$\                         $$\      $$\
     $$ |  $$ |  $$ |$$ |  $$ |      $$$  / \$$$ |$$ |  $$ |$$ |  $$ |
     $$ |  \$$$$$$  |\$$$$$$  |      $$  /   \$$ |\$$$$$$  |$$ |  $$ |
     \__|   \______/  \______/       \__/     \__| \______/ \__|  \__| ''')
-     #implement win
-
+    
+    #calculating win ratio
+    print("You found the Prize in Room: {current} out of {maxnumber} rooms. With a 10% finding chance, your luck chance is:{luck} %"
+    .format(
+     current= current_room.id,
+     maxnumber= max_rooms,
+     luck= (((max_rooms-current_room.id)/max_rooms)*100-10)
+    
+    ))
 
 #finishing touches
 print('''\nThank you for playing the maze game. Play again and test your luck anytime!''')
